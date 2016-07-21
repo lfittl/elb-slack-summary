@@ -1,0 +1,25 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    aws-sdk (2.3.12)
+      aws-sdk-resources (= 2.3.12)
+    aws-sdk-core (2.3.12)
+      jmespath (~> 1.0)
+    aws-sdk-resources (2.3.12)
+      aws-sdk-core (= 2.3.12)
+    dotenv (2.1.1)
+    jmespath (1.2.4)
+      json_pure (>= 1.8.1)
+    json_pure (1.8.3)
+    slack-notifier (1.5.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  aws-sdk (~> 2)
+  dotenv
+  slack-notifier
+
+BUNDLED WITH
+   1.12.5
