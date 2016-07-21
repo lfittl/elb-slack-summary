@@ -26,4 +26,4 @@ WORKDIR $APPDIR
 USER root
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-CMD ["su -c \"bundle exec /home/app/main.rb\" app"]
+CMD su -c "bundle exec /home/app/main.rb" app
