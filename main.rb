@@ -57,7 +57,13 @@ requests = []
     resp = s3.get_object(bucket: ENV.fetch('S3_BUCKET'), key: obj.key)
 
     resp.body.read.each_line do |line|
-      r = Request.new(*line.strip.scan(/([^" ]+)|"([^"]+)"/).flatten.compact)
+      begin
+        r = Request.new(*line.strip.scan(/([^" ]+)|"([^"]+)"/).flatten.compact)
+      rescue ArgumentError => e
+        raise unless e.message == 'struct size differs'
+        puts format('Could not parse line, skipping: %s', line)
+        next
+      end
 
       next if r.user_agent == 'PINGOMETER_BOT_(HTTPS://PINGOMETER.COM)'
       next unless r.hostname == ENV.fetch('APP_HOSTNAME')
