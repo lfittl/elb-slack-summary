@@ -13,10 +13,10 @@ s3 = Aws::S3::Client.new(
   region: 'us-east-1',
 )
 
-Request = Struct.new(:timestamp, :elb, :client_ip_and_port, :backend_ip_and_port,
+Request = Struct.new(:protocol, :timestamp, :elb, :client_ip_and_port, :backend_ip_and_port,
   :request_processing_time, :backend_processing_time, :response_processing_time,
   :elb_status_code, :backend_status_code, :received_bytes, :sent_bytes, :request,
-  :user_agent, :ssl_cipher, :ssl_protocol) do
+  :user_agent, :ssl_cipher, :ssl_protocol, :target_group) do
   def client_ip
     client_ip_and_port.split(':')[0]
   end
@@ -55,8 +55,9 @@ requests = []
     prefix: ENV.fetch('S3_PATH') + ts.strftime('/%Y/%m/%d/'),
   ).contents.each do |obj|
     resp = s3.get_object(bucket: ENV.fetch('S3_BUCKET'), key: obj.key)
-
-    resp.body.read.each_line do |line|
+    data = resp.body.read
+    data = Zlib::GzipReader.new(StringIO.new(data)) if resp.content_encoding == 'gzip'
+    data.each_line do |line|
       begin
         r = Request.new(*line.strip.scan(/([^" ]+)|"([^"]+)"/).flatten.compact)
       rescue ArgumentError => e
