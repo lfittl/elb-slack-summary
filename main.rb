@@ -58,10 +58,10 @@ requests = []
   ).contents.each do |obj|
     resp = s3.get_object(bucket: ENV.fetch('S3_BUCKET'), key: obj.key)
     data = resp.body.read
-    data = Zlib::GzipReader.new(StringIO.new(data)) if resp.content_encoding == 'gzip'
+    data = Zlib::GzipReader.new(StringIO.new(data)) if resp.content_encoding == 'gzip' || obj.key.end_with?('.gz')
     data.each_line do |line|
       begin
-        r = Request.new(*line.scrub.strip.scan(/([^" ]+)|"([^"]+)"/).flatten.compact)
+        r = Request.new(*line.strip.scan(/([^" ]+)|"([^"]+)"/).flatten.compact[0..16])
       rescue ArgumentError => e
         raise unless e.message == 'struct size differs'
         puts format('Could not parse line, skipping: %s', line)
