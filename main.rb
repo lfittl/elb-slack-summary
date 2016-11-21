@@ -39,12 +39,12 @@ Request = Struct.new(:protocol, :timestamp, :elb, :client_ip_and_port, :backend_
 
   def hostname
     URI(url).host
-  rescue URI::InvalidURIError
+  rescue URI::InvalidURIError, ArgumentError
   end
 
   def path
     URI(url).path
-  rescue URI::InvalidURIError
+  rescue URI::InvalidURIError, ArgumentError
   end
 end
 
