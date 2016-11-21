@@ -30,11 +30,11 @@ Request = Struct.new(:protocol, :timestamp, :elb, :client_ip_and_port, :backend_
   end
 
   def request_method
-    request.split(" ")[0]
+    (request || '').split(' ')[0]
   end
 
   def url
-    request.split(" ")[1]
+    (request || '').split(' ')[1]
   end
 
   def hostname
