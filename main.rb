@@ -61,7 +61,7 @@ requests = []
     data = Zlib::GzipReader.new(StringIO.new(data)) if resp.content_encoding == 'gzip'
     data.each_line do |line|
       begin
-        r = Request.new(*line.strip.scan(/([^" ]+)|"([^"]+)"/).flatten.compact)
+        r = Request.new(*line.strip.scrub.scan(/([^" ]+)|"([^"]+)"/).flatten.compact)
       rescue ArgumentError => e
         raise unless e.message == 'struct size differs'
         puts format('Could not parse line, skipping: %s', line)
